@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useTheme } from "next-themes"
 import {
   LayoutDashboard,
   Package,
@@ -9,6 +10,9 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
+  DollarSign,
+  Moon,
+  Sun,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -36,6 +40,11 @@ const navItems = [
     icon: Package,
   },
   {
+    title: "Financials",
+    href: "/dashboard/financials",
+    icon: DollarSign,
+  },
+  {
     title: "Customers",
     href: "/dashboard/customers",
     icon: Users,
@@ -49,6 +58,11 @@ const navItems = [
 
 export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
   const pathname = usePathname()
+  const { theme, setTheme } = useTheme()
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark")
+  }
 
   return (
     <aside
@@ -113,6 +127,49 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
           })}
         </ul>
       </nav>
+
+      <div className="border-t-2 border-border p-2">
+        {collapsed ? (
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                className="mx-auto flex h-10 w-10"
+              >
+                {theme === "dark" ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+                <span className="sr-only">Toggle theme</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              {theme === "dark" ? "Light Mode" : "Dark Mode"}
+            </TooltipContent>
+          </Tooltip>
+        ) : (
+          <Button
+            variant="ghost"
+            onClick={toggleTheme}
+            className="flex w-full items-center justify-start gap-3 px-3 py-2"
+          >
+            {theme === "dark" ? (
+              <>
+                <Sun className="h-5 w-5" />
+                <span className="text-sm font-medium">LIGHT MODE</span>
+              </>
+            ) : (
+              <>
+                <Moon className="h-5 w-5" />
+                <span className="text-sm font-medium">DARK MODE</span>
+              </>
+            )}
+          </Button>
+        )}
+      </div>
     </aside>
   )
 }

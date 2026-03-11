@@ -11,19 +11,19 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="border-2 border-border p-4">
           <p className="text-sm text-muted-foreground">Total Products</p>
-          <p className="text-3xl font-bold">0</p>
+          <p className="text-3xl font-bold">_</p>
         </div>
         <div className="border-2 border-border p-4">
           <p className="text-sm text-muted-foreground">Total Customers</p>
-          <p className="text-3xl font-bold">0</p>
+          <p className="text-3xl font-bold">_</p>
         </div>
         <div className="border-2 border-border p-4">
           <p className="text-sm text-muted-foreground">Total Orders</p>
-          <p className="text-3xl font-bold">0</p>
+          <p className="text-3xl font-bold">_</p>
         </div>
         <div className="border-2 border-border p-4">
           <p className="text-sm text-muted-foreground">Revenue</p>
-          <p className="text-3xl font-bold">$0</p>
+          <p className="text-3xl font-bold">_</p>
         </div>
       </div>
     </div>
