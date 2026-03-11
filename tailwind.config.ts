@@ -50,8 +50,7 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["var(--font-helvetica)"],
-        business: ["var(--font-business)"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
       },
     },
   },
