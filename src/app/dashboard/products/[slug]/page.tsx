@@ -1,24 +1,10 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { notFound } from "next/navigation"
+import { createClient } from "@/lib/supabase/server"
 import { ProductInfo } from "@/components/products/product-info"
 import { Button } from "@/components/ui/button"
-
-// Placeholder product data - will be replaced with real data fetching
-const PLACEHOLDER_PRODUCT = {
-  id: "1",
-  title: "Product Name",
-  price: 199.99,
-  condition: 9.2,
-  specs: {
-    lens: "50mm f/1.8",
-    iso_range: "100-6400",
-    shutter_speed: "1/4000s",
-    features: "Auto-focus, Weather sealed",
-  },
-  deliveryIncludes: "Camera body, Strap, Battery, Charger",
-  images: [] as string[],
-}
 
 interface ProductDetailPageProps {
   params: Promise<{ slug: string }>
@@ -26,9 +12,17 @@ interface ProductDetailPageProps {
 
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { slug } = await params
+  const supabase = await createClient()
   
-  // TODO: Fetch real product data by slug
-  const product = { ...PLACEHOLDER_PRODUCT, title: slug.replace(/-/g, " ").toUpperCase() }
+  const { data: product, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("slug", slug)
+    .single()
+
+  if (error || !product) {
+    notFound()
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -65,7 +59,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
         {/* Info Section */}
         <div className="w-full lg:w-1/2">
-          <ProductInfo product={product} />
+          <ProductInfo 
+            product={{
+              ...product,
+              deliveryIncludes: product.delivery_includes,
+            }} 
+          />
         </div>
       </div>
     </div>
