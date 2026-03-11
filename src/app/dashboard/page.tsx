@@ -1,23 +1,31 @@
-import { createClient } from "@/lib/supabase/server"
-import { redirect } from "next/navigation"
-
-export default async function DashboardPage() {
-  const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/login")
-  }
-
+export default function DashboardPage() {
   return (
-    <main className="flex min-h-svh flex-col items-center justify-center p-6">
-      <div className="w-full max-w-md border-2 border-border p-6">
+    <div className="flex flex-col gap-6">
+      <div>
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="mt-2 text-muted-foreground">
-          Welcome, {user.email}
+        <p className="text-muted-foreground">
+          Welcome to the Retroica admin dashboard.
         </p>
       </div>
-    </main>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="border-2 border-border p-4">
+          <p className="text-sm text-muted-foreground">Total Products</p>
+          <p className="text-3xl font-bold">0</p>
+        </div>
+        <div className="border-2 border-border p-4">
+          <p className="text-sm text-muted-foreground">Total Customers</p>
+          <p className="text-3xl font-bold">0</p>
+        </div>
+        <div className="border-2 border-border p-4">
+          <p className="text-sm text-muted-foreground">Total Orders</p>
+          <p className="text-3xl font-bold">0</p>
+        </div>
+        <div className="border-2 border-border p-4">
+          <p className="text-sm text-muted-foreground">Revenue</p>
+          <p className="text-3xl font-bold">$0</p>
+        </div>
+      </div>
+    </div>
   )
 }
