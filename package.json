@@ -11,7 +11,9 @@
   "dependencies": {
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.25"
+    "next": "14.2.25",
+    "@supabase/supabase-js": "^2.49.1",
+    "@supabase/ssr": "^0.5.2"
   },
   "devDependencies": {
     "typescript": "^5",
