@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "AA00Business";
+  src: url("/fonts/AA00BusinessSystem.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
