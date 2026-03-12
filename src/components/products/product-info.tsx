@@ -14,7 +14,6 @@ interface CategoryField {
 
 interface ProductInfoProps {
   product: {
-    id: string
     title: string
     price?: number
     condition?: number
