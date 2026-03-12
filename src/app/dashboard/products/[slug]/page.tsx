@@ -33,31 +33,20 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     notFound()
   }
 
-  console.log("[v0] product.category_id:", product.category_id)
-  console.log("[v0] product.categories:", JSON.stringify(product.categories))
-
   // Get the Level 2 category ID (parent of the product's Level 3 category)
   const level2CategoryId = product.categories?.parent_id
-
-  console.log("[v0] level2CategoryId:", level2CategoryId)
 
   // Fetch category_fields for the Level 2 category
   let categoryFields: any[] = []
   if (level2CategoryId) {
-    const { data: fields, error: fieldsError } = await supabase
+    const { data: fields } = await supabase
       .from("category_fields")
       .select("*")
       .eq("category_id", level2CategoryId)
       .order("display_order", { ascending: true })
     
-    console.log("[v0] categoryFields:", JSON.stringify(fields))
-    console.log("[v0] categoryFields error:", fieldsError)
     categoryFields = fields || []
-  } else {
-    console.log("[v0] No level2CategoryId — skipping category_fields fetch")
   }
-
-  console.log("[v0] product.specs:", JSON.stringify(product.specs))
 
   return (
     <div className="flex flex-col gap-6">

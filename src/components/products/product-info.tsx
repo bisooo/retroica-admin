@@ -42,17 +42,23 @@ export function ProductInfo({ product, categoryFields = [] }: ProductInfoProps) 
   const mobileRating = ((product.condition || 0) / 2).toFixed(1)
   const starColor = getStarColor(product.condition || 0)
 
-  // Display specs in order of categoryFields definition
+  // Display specs in order of categoryFields definition.
+  // Specs may be stored with snake_case keys (e.g. "iso_range") OR
+  // human-readable label keys (e.g. "ISO Range") depending on import source.
+  // We check both to ensure compatibility.
   const specsToDisplay = categoryFields.length > 0
     ? categoryFields
         .map((field) => ({
           ...field,
-          value: product.specs?.[field.key] || "",
+          value:
+            product.specs?.[field.key] ||           // snake_case key match
+            product.specs?.[field.label] ||          // exact label match
+            "",
         }))
-        .filter((item) => item.value) // Only show fields that have values
+        .filter((item) => item.value)
     : Object.entries(product.specs || {}).map(([key, value]) => ({
         key,
-        label: key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
+        label: key,
         value: value || "",
         field_type: "text",
       }))
