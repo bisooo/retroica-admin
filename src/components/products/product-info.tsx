@@ -5,7 +5,7 @@ import { Star, ChevronDown, ChevronUp } from "lucide-react"
 import { getStarColor } from "@/lib/utils/rating"
 
 interface CategoryField {
-  id: string
+  id?: string
   key: string
   label: string
   field_type: string
