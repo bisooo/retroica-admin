@@ -5,6 +5,7 @@ import { notFound } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { ProductInfo } from "@/components/products/product-info"
 import { Button } from "@/components/ui/button"
+import type { CategoryField } from "@/types/product"
 
 interface ProductDetailPageProps {
   params: Promise<{ slug: string }>
@@ -37,7 +38,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const level2CategoryId = product.categories?.parent_id
 
   // Fetch category_fields for the Level 2 category
-  let categoryFields: any[] = []
+  let categoryFields: CategoryField[] = []
   if (level2CategoryId) {
     const { data: fields } = await supabase
       .from("category_fields")
@@ -45,7 +46,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       .eq("category_id", level2CategoryId)
       .order("display_order", { ascending: true })
     
-    categoryFields = fields || []
+    categoryFields = (fields as CategoryField[]) || []
   }
 
   return (

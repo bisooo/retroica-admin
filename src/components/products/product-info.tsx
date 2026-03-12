@@ -3,14 +3,7 @@
 import { useState } from "react"
 import { Star, ChevronDown, ChevronUp } from "lucide-react"
 import { getStarColor } from "@/lib/utils/rating"
-
-interface CategoryField {
-  id?: string
-  key: string
-  label: string
-  field_type: string
-  display_order: number
-}
+import type { CategoryField } from "@/types/product"
 
 interface ProductInfoProps {
   product: {
