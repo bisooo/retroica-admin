@@ -4,6 +4,14 @@ import { useState } from "react"
 import { Star, ChevronDown, ChevronUp } from "lucide-react"
 import { getStarColor } from "@/lib/utils/rating"
 
+interface CategoryField {
+  id: string
+  key: string
+  label: string
+  field_type: string
+  display_order: number
+}
+
 interface ProductInfoProps {
   product: {
     id: string
@@ -13,9 +21,10 @@ interface ProductInfoProps {
     specs?: Record<string, string>
     deliveryIncludes?: string
   }
+  categoryFields?: CategoryField[]
 }
 
-export function ProductInfo({ product }: ProductInfoProps) {
+export function ProductInfo({ product, categoryFields = [] }: ProductInfoProps) {
   const [expandedSections, setExpandedSections] = useState({
     specs: true,
     deliveryIncludes: true,
@@ -32,6 +41,21 @@ export function ProductInfo({ product }: ProductInfoProps) {
   const conditionStarsMobile = Math.floor((product.condition || 0) / 2)
   const mobileRating = ((product.condition || 0) / 2).toFixed(1)
   const starColor = getStarColor(product.condition || 0)
+
+  // Display specs in order of categoryFields definition
+  const specsToDisplay = categoryFields.length > 0
+    ? categoryFields
+        .map((field) => ({
+          ...field,
+          value: product.specs?.[field.key] || "",
+        }))
+        .filter((item) => item.value) // Only show fields that have values
+    : Object.entries(product.specs || {}).map(([key, value]) => ({
+        key,
+        label: key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
+        value: value || "",
+        field_type: "text",
+      }))
 
   return (
     <div className="h-full flex flex-col gap-4 pt-4 overflow-y-auto">
@@ -117,17 +141,12 @@ export function ProductInfo({ product }: ProductInfoProps) {
           </button>
           {expandedSections.specs && (
             <div className="mt-4 space-y-2 font-sans text-xs text-foreground">
-              {product.specs && Object.keys(product.specs).length > 0 ? (
-                Object.entries(product.specs).map(([field, value]) => (
-                  <div key={field} className="flex justify-between gap-4">
-                    <span className="font-bold">
-                      {field
-                        .replace(/_/g, " ")
-                        .replace(/\b\w/g, (l) => l.toUpperCase())}
-                      :
-                    </span>
+              {specsToDisplay.length > 0 ? (
+                specsToDisplay.map((field) => (
+                  <div key={field.key} className="flex justify-between gap-4">
+                    <span className="font-bold">{field.label}:</span>
                     <span className="text-right text-muted-foreground">
-                      {value || "_"}
+                      {field.value || "_"}
                     </span>
                   </div>
                 ))

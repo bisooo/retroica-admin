@@ -14,14 +14,38 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const { slug } = await params
   const supabase = await createClient()
   
+  // Fetch product with its category hierarchy
   const { data: product, error } = await supabase
     .from("products")
-    .select("*")
+    .select(`
+      *,
+      categories!category_id (
+        id,
+        name,
+        parent_id,
+        level
+      )
+    `)
     .eq("slug", slug)
     .single()
 
   if (error || !product) {
     notFound()
+  }
+
+  // Get the Level 2 category ID (parent of the product's Level 3 category)
+  const level2CategoryId = product.categories?.parent_id
+
+  // Fetch category_fields for the Level 2 category
+  let categoryFields: any[] = []
+  if (level2CategoryId) {
+    const { data: fields } = await supabase
+      .from("category_fields")
+      .select("*")
+      .eq("category_id", level2CategoryId)
+      .order("display_order", { ascending: true })
+    
+    categoryFields = fields || []
   }
 
   return (
@@ -63,7 +87,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             product={{
               ...product,
               deliveryIncludes: product.delivery_includes,
-            }} 
+            }}
+            categoryFields={categoryFields}
           />
         </div>
       </div>
