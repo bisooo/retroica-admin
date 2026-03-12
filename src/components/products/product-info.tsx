@@ -69,7 +69,7 @@ export function ProductInfo({ product, categoryFields = [] }: ProductInfoProps) 
       {/* Price and Condition - Desktop Layout */}
       <div className="flex-shrink-0 hidden lg:flex lg:items-center lg:justify-between lg:gap-4">
         {/* Price */}
-        <div className="font-sans text-xl font-bold text-foreground">
+        <div className="font-business text-xl font-bold text-foreground">
           {product.price ? `$${product.price.toFixed(2)}` : "_"}
         </div>
 
@@ -87,7 +87,7 @@ export function ProductInfo({ product, categoryFields = [] }: ProductInfoProps) 
               />
             ))}
           </div>
-          <span className="font-sans text-sm text-foreground">
+          <span className="font-business text-sm text-foreground">
             ({product.condition || 0})
           </span>
         </div>
@@ -97,7 +97,7 @@ export function ProductInfo({ product, categoryFields = [] }: ProductInfoProps) 
       <div className="flex-shrink-0 lg:hidden space-y-3">
         <div className="flex items-center justify-between">
           {/* Price */}
-          <div className="font-sans text-xl font-bold text-foreground">
+          <div className="font-business text-xl font-bold text-foreground">
             {product.price ? `$${product.price.toFixed(2)}` : "_"}
           </div>
 
@@ -115,7 +115,7 @@ export function ProductInfo({ product, categoryFields = [] }: ProductInfoProps) 
                 />
               ))}
             </div>
-            <span className="font-sans text-sm text-foreground">
+            <span className="font-business text-sm text-foreground">
               ({mobileRating})
             </span>
           </div>
@@ -130,7 +130,7 @@ export function ProductInfo({ product, categoryFields = [] }: ProductInfoProps) 
             onClick={() => toggleSection("specs")}
             className="flex items-center justify-between w-full text-left"
           >
-            <h3 className="font-sans text-sm font-bold text-foreground">
+            <h3 className="font-business text-sm font-bold text-foreground">
               SPECS
             </h3>
             {expandedSections.specs ? (
@@ -140,7 +140,7 @@ export function ProductInfo({ product, categoryFields = [] }: ProductInfoProps) 
             )}
           </button>
           {expandedSections.specs && (
-            <div className="mt-4 space-y-2 font-sans text-xs text-foreground">
+            <div className="mt-4 space-y-2 font-business text-xs text-foreground">
               {specsToDisplay.length > 0 ? (
                 specsToDisplay.map((field) => (
                   <div key={field.key} className="flex justify-between gap-4">
@@ -164,7 +164,7 @@ export function ProductInfo({ product, categoryFields = [] }: ProductInfoProps) 
               onClick={() => toggleSection("deliveryIncludes")}
               className="flex items-center justify-between w-full text-left"
             >
-              <h3 className="font-sans text-sm font-bold text-foreground">
+              <h3 className="font-business text-sm font-bold text-foreground">
                 DELIVERY INCLUDES
               </h3>
               {expandedSections.deliveryIncludes ? (
@@ -174,7 +174,7 @@ export function ProductInfo({ product, categoryFields = [] }: ProductInfoProps) 
               )}
             </button>
             {expandedSections.deliveryIncludes && (
-              <div className="mt-4 space-y-1 font-sans text-xs text-foreground">
+              <div className="mt-4 space-y-1 font-business text-xs text-foreground">
                 {product.deliveryIncludes.split(",").map((item, index) => (
                   <p key={index}>• {item.trim()}</p>
                 ))}

@@ -51,7 +51,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        display: ["AA00Business", "system-ui", "sans-serif"],
+        business: ["AA00Business", "system-ui", "sans-serif"],
       },
     },
   },

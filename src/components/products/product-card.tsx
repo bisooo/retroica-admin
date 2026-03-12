@@ -42,7 +42,7 @@ export function ProductCard({
             />
           ) : (
             <div className="w-full h-full bg-muted flex items-center justify-center">
-              <span className="text-muted-foreground text-xs">NO IMAGE</span>
+              <span className="font-business text-muted-foreground text-xs">NO IMAGE</span>
             </div>
           )}
         </Link>
@@ -60,7 +60,7 @@ export function ProductCard({
         <div className="border-t border-border mb-3" />
 
         {/* Price */}
-        <p className="font-sans text-sm text-foreground text-center mb-3">
+        <p className="font-business text-sm text-foreground text-center mb-3">
           {price ? `$${price.toFixed(2)}` : "_"}
         </p>
 
