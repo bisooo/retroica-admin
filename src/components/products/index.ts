@@ -1,4 +1,6 @@
 export { ProductCard } from "./product-card"
+export { ProductForm } from "./product-form"
 export { ProductGrid } from "./product-grid"
+export { ProductTable } from "./product-table"
 export { ProductGridControls } from "./product-grid-controls"
 export { ProductInfo } from "./product-info"

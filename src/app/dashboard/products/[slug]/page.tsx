@@ -25,6 +25,20 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         name,
         parent_id,
         level
+      ),
+      profiles!owner_id (
+        id,
+        name,
+        commission
+      ),
+      platform_listings (
+        id,
+        platform,
+        platform_id,
+        status,
+        price,
+        listed_at,
+        synced_at
       )
     `)
     .eq("slug", slug)
