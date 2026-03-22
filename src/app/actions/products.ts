@@ -22,7 +22,7 @@ export async function createProduct(
 
   // Collect spec fields — prefixed with "spec_", rest is the label
   const specs: Record<string, string> = {}
-  for (const [key, value] of formData.entries()) {
+  for (const [key, value] of Array.from(formData.entries())) {
     if (key.startsWith('spec_') && typeof value === 'string' && value.trim()) {
       specs[key.slice(5)] = value.trim()
     }
