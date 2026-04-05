@@ -21,12 +21,18 @@ interface RevenueChartProps {
   data: MonthlyData[]
 }
 
-function EurTooltip({ active, payload, label }: any) {
+interface TooltipPayloadEntry {
+  name: string
+  value: number
+  color: string
+}
+
+function EurTooltip({ active, payload, label }: { active?: boolean; payload?: TooltipPayloadEntry[]; label?: string }) {
   if (!active || !payload?.length) return null
   return (
     <div className="border-2 border-border bg-background p-3 text-xs">
       <p className="font-bold mb-1">{label}</p>
-      {payload.map((p: any) => (
+      {payload.map((p: TooltipPayloadEntry) => (
         <p key={p.name} style={{ color: p.color }}>
           {p.name}: €{Number(p.value).toFixed(2)}
         </p>
