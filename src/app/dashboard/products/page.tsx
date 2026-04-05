@@ -11,7 +11,7 @@ export default async function ProductsPage() {
     supabase
       .from("products")
       .select(
-        "id, slug, title, price, condition, description, delivery_includes, specs, created_at, category_id, profiles!owner_id (name)"
+        "id, slug, title, price, condition, description, delivery_includes, specs, created_at, category_id, profiles!owner_id (name), platform_listings (platform, status, price, platform_data)"
       )
       .order("created_at", { ascending: false }),
     supabase

@@ -12,6 +12,13 @@ interface Category {
   level: number
 }
 
+interface PlatformListing {
+  platform: string
+  status: string
+  price: number | null
+  platform_data: { url?: string } | null
+}
+
 interface Product {
   id: string
   slug: string
@@ -24,6 +31,7 @@ interface Product {
   created_at: string
   category_id: string | null
   profiles: { name: string | null } | { name: string | null }[] | null
+  platform_listings: PlatformListing[] | null
 }
 
 interface ProductTableProps {
@@ -42,6 +50,8 @@ type SortKey =
   | "delivery_includes"
   | "specs"
   | "created_at"
+  | "platform"
+  | "status"
 
 type SortDir = "asc" | "desc"
 
@@ -83,6 +93,8 @@ function getSortValue(product: Product, key: SortKey, categoryMap: Map<string, C
     case "delivery_includes": return product.delivery_includes?.toLowerCase() ?? ""
     case "specs": return formatSpecs(product.specs).toLowerCase()
     case "created_at": return product.created_at ?? ""
+    case "platform": return product.platform_listings?.[0]?.platform ?? ""
+    case "status": return product.platform_listings?.[0]?.status ?? ""
   }
 }
 
@@ -96,9 +108,21 @@ function SortIcon({ col, sortKey, sortDir }: { col: SortKey; sortKey: SortKey; s
     : <ChevronDown className="inline ml-1 h-3 w-3" />
 }
 
+type StatusFilter = "all" | "active" | "sold" | "paused" | "draft" | "needs_sync"
+
+const STATUS_TABS: { value: StatusFilter; label: string }[] = [
+  { value: "all",        label: "ALL" },
+  { value: "active",     label: "ACTIVE" },
+  { value: "sold",       label: "SOLD" },
+  { value: "paused",     label: "PAUSED" },
+  { value: "draft",      label: "DRAFT" },
+  { value: "needs_sync", label: "NEEDS SYNC" },
+]
+
 export function ProductTable({ products, categories }: ProductTableProps) {
   const [query, setQuery] = useState("")
   const [categoryFilter, setCategoryFilter] = useState("")
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all")
   const [sortKey, setSortKey] = useState<SortKey>("created_at")
   const [sortDir, setSortDir] = useState<SortDir>("desc")
 
@@ -122,6 +146,10 @@ export function ProductTable({ products, categories }: ProductTableProps) {
     const filtered = products.filter(p => {
       if (q && !p.title?.toLowerCase().includes(q)) return false
       if (categoryFilter && p.category_id !== categoryFilter) return false
+      if (statusFilter !== "all") {
+        const s = p.platform_listings?.[0]?.status ?? "needs_sync"
+        if (s !== statusFilter) return false
+      }
       return true
     })
 
@@ -133,7 +161,7 @@ export function ProductTable({ products, categories }: ProductTableProps) {
         : String(av).localeCompare(String(bv))
       return sortDir === "asc" ? cmp : -cmp
     })
-  }, [products, query, categoryFilter, sortKey, sortDir, categoryMap])
+  }, [products, query, categoryFilter, statusFilter, sortKey, sortDir, categoryMap])
 
   function handleSort(key: SortKey) {
     if (key === sortKey) {
@@ -158,6 +186,21 @@ export function ProductTable({ products, categories }: ProductTableProps) {
 
   return (
     <div className="flex flex-col gap-3">
+      <div className="flex border-b-2 border-border">
+        {STATUS_TABS.map(tab => (
+          <button
+            key={tab.value}
+            onClick={() => setStatusFilter(tab.value)}
+            className={`px-4 py-2 text-xs font-bold tracking-widest transition-colors whitespace-nowrap
+              ${statusFilter === tab.value
+                ? "border-b-2 -mb-[2px] border-foreground text-foreground"
+                : "text-muted-foreground hover:text-foreground"
+              }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
       <div className="flex flex-wrap gap-3">
         <div className="relative max-w-sm flex-1 min-w-48">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
@@ -195,13 +238,16 @@ export function ProductTable({ products, categories }: ProductTableProps) {
               <Th col="description" label="DESCRIPTION" />
               <Th col="delivery_includes" label="DELIVERY INCLUDES" />
               <Th col="specs" label="SPECS" />
+              <Th col="platform" label="PLATFORM" />
+              <Th col="status" label="STATUS" />
+              <th className={thCn}>ETSY</th>
               <Th col="created_at" label="CREATED" />
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={10} className="px-3 py-8 text-center text-muted-foreground">
+                <td colSpan={13} className="px-3 py-8 text-center text-muted-foreground">
                   No products found.
                 </td>
               </tr>
@@ -237,6 +283,24 @@ export function ProductTable({ products, categories }: ProductTableProps) {
                   </td>
                   <td className="px-3 py-2 align-top max-w-xs">
                     <span className="line-clamp-2">{formatSpecs(p.specs) || "—"}</span>
+                  </td>
+                  <td className="px-3 py-2 align-top whitespace-nowrap text-muted-foreground">
+                    {p.platform_listings?.[0]?.platform ?? "—"}
+                  </td>
+                  <td className="px-3 py-2 align-top whitespace-nowrap">
+                    {p.platform_listings?.[0]?.status ?? "—"}
+                  </td>
+                  <td className="px-3 py-2 align-top whitespace-nowrap">
+                    {p.platform_listings?.[0]?.platform_data?.url ? (
+                      <a
+                        href={p.platform_listings[0].platform_data.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs hover:underline text-muted-foreground"
+                      >
+                        VIEW
+                      </a>
+                    ) : "—"}
                   </td>
                   <td className="px-3 py-2 align-top whitespace-nowrap text-muted-foreground">
                     {new Date(p.created_at).toLocaleDateString("en-GB")}
