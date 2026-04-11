@@ -19,6 +19,7 @@ export async function createProduct(
   const rawCondition = formData.get('condition') as string
   const price = rawPrice ? Number(rawPrice) : null
   const condition = rawCondition ? Number(rawCondition) : null
+  const inventory_status = (formData.get('inventory_status') as string) || 'ready'
 
   // Collect spec fields — prefixed with "spec_", rest is the label
   const specs: Record<string, string> = {}
@@ -38,6 +39,7 @@ export async function createProduct(
     specs: Object.keys(specs).length > 0 ? specs : null,
     delivery_includes,
     owner_id,
+    inventory_status,
     images: [],
   })
 

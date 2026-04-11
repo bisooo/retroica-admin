@@ -146,6 +146,16 @@ export function ProductForm({ categories, categoryFields, profiles }: ProductFor
           </div>
         </div>
 
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="inventory_status">INVENTORY STATUS</Label>
+          <select id="inventory_status" name="inventory_status" className={selectCn} defaultValue="ready">
+            <option value="ready">Ready to be listed</option>
+            <option value="missing_accessory">Missing accessory</option>
+            <option value="non_functional">Non-functional</option>
+            <option value="unassessed">Unassessed</option>
+          </select>
+        </div>
+
         {profiles.length > 0 && (
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="owner_id">OWNER</Label>

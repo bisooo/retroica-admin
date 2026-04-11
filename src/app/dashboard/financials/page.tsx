@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { RevenueChart } from '@/components/financials/revenue-chart'
+import { ActiveInventory } from '@/components/financials/active-inventory'
 
 // Ledger types that are actual Etsy fees (exclude DISBURSE2 which is a bank payout,
 // REFUND_GROSS which is a refund event, and PAYMENT_GROSS which is incoming revenue)
@@ -31,6 +32,35 @@ function monthLabel(iso: string) {
 
 export default async function FinancialsPage() {
   const supabase = await createClient()
+
+  // Fetch admin profile id for fallback owner assignment
+  const { data: adminProfile } = await supabase
+    .from('profiles')
+    .select('id, name')
+    .eq('name', 'admin')
+    .single()
+
+  // Active listings: products with platform_listings.status = 'active', join owner profile
+  const { data: activeProducts } = await supabase
+    .from('platform_listings')
+    .select('price, products!inner(title, owner_id, profiles!owner_id(name))')
+    .eq('platform', 'etsy')
+    .eq('status', 'active')
+
+  const adminName = adminProfile?.name ?? 'admin'
+
+  const inventoryProducts = (activeProducts ?? []).map(l => {
+    const product = l.products as unknown as { title: string; owner_id: string | null; profiles: { name: string | null } | { name: string | null }[] | null }
+    const profiles = product.profiles
+    const ownerName = Array.isArray(profiles) ? profiles[0]?.name : profiles?.name
+    return {
+      title: product.title,
+      price: Number(l.price ?? 0),
+      owner: ownerName ?? adminName,
+    }
+  }).sort((a, b) => b.price - a.price)
+
+  const inventoryOwners = Array.from(new Set(inventoryProducts.map(p => p.owner))).sort()
 
   const [{ data: receipts }, { data: ledger }] = await Promise.all([
     supabase
@@ -189,6 +219,9 @@ export default async function FinancialsPage() {
           </table>
         </div>
       </div>
+
+      {/* Active inventory */}
+      <ActiveInventory products={inventoryProducts} owners={inventoryOwners} />
 
       {/* Sales table */}
       <div className="border-2 border-border">

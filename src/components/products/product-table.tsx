@@ -30,6 +30,7 @@ interface Product {
   specs: Record<string, string> | null
   created_at: string
   category_id: string | null
+  inventory_status: string | null
   profiles: { name: string | null } | { name: string | null }[] | null
   platform_listings: PlatformListing[] | null
 }
@@ -52,6 +53,7 @@ type SortKey =
   | "created_at"
   | "platform"
   | "status"
+  | "inventory_status"
 
 type SortDir = "asc" | "desc"
 
@@ -95,6 +97,7 @@ function getSortValue(product: Product, key: SortKey, categoryMap: Map<string, C
     case "created_at": return product.created_at ?? ""
     case "platform": return product.platform_listings?.[0]?.platform ?? ""
     case "status": return product.platform_listings?.[0]?.status ?? ""
+    case "inventory_status": return product.inventory_status ?? ""
   }
 }
 
@@ -240,6 +243,7 @@ export function ProductTable({ products, categories }: ProductTableProps) {
               <Th col="specs" label="SPECS" />
               <Th col="platform" label="PLATFORM" />
               <Th col="status" label="STATUS" />
+              <Th col="inventory_status" label="INVENTORY" />
               <th className={thCn}>ETSY</th>
               <Th col="created_at" label="CREATED" />
             </tr>
@@ -247,7 +251,7 @@ export function ProductTable({ products, categories }: ProductTableProps) {
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={13} className="px-3 py-8 text-center text-muted-foreground">
+                <td colSpan={14} className="px-3 py-8 text-center text-muted-foreground">
                   No products found.
                 </td>
               </tr>
@@ -289,6 +293,9 @@ export function ProductTable({ products, categories }: ProductTableProps) {
                   </td>
                   <td className="px-3 py-2 align-top whitespace-nowrap">
                     {p.platform_listings?.[0]?.status ?? "—"}
+                  </td>
+                  <td className="px-3 py-2 align-top whitespace-nowrap text-muted-foreground">
+                    {p.inventory_status ?? "—"}
                   </td>
                   <td className="px-3 py-2 align-top whitespace-nowrap">
                     {p.platform_listings?.[0]?.platform_data?.url ? (
