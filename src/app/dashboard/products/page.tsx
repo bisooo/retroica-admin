@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Plus } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 import { ProductTable } from "@/components/products/product-table"
+import { SyncButton } from "@/components/products/sync-button"
 import { Button } from "@/components/ui/button"
 
 export default async function ProductsPage() {
@@ -30,12 +31,15 @@ export default async function ProductsPage() {
           <h1 className="text-2xl font-bold">Products</h1>
           <p className="text-muted-foreground">Manage your product inventory.</p>
         </div>
-        <Link href="/dashboard/products/new">
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            ADD PRODUCT
-          </Button>
-        </Link>
+        <div className="flex items-center gap-3">
+          <SyncButton />
+          <Link href="/dashboard/products/new">
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              ADD PRODUCT
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {products && products.length > 0 ? (
